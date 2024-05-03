@@ -1,30 +1,33 @@
-L = 11; 
-Nx = 100; 
-T1 = 100; 
-T2 = 20;
-k = 1; 
-Q = 10; 
-
-
-dx = L / (Nx - 1);
-x = linspace(0, L, Nx);
-dt = 0.001;
-t_final = 1;
-Nt = ceil(t_final / dt);
-
- 
-T = zeros(Nx, 1);
-T(1) = T1;
-T(end) = T2;
-
-
-for t = 1:Nt
-    T_old = T;
+L = 1;
+Nx = 50;
+Nt = 1000;
+alpha = 0.01;
+% Spatial grid
+dx = L / (Nx - l);
+x = 0:dx:L;
+% Initial condition
+T0 = Zeros(1, Nx);
+% Boundary conditions
+TH_inlet = 100;
+TC_inlet = 20;
+% Initialize temperature matrix
+T = Zeros(Nt, Nx);
+T(:, 1) = TH_inlet;
+T(:, end) = TC_inlet;
+T(1, :) = T0;
+% Time parameters
+dt = 0.01;
+t = 0:dt:(Nt-1)*dt;
+% Finite difference method
+for n = 1:Nt-1
     for i = 2:Nx-1
-        T(i) = T_old(i) + k * dt / dx^2 * (T_old(i+1) - 2*T_old(i) + T_old(i-1)) - Q * dt;
+    T(n+l, i) = T(n, i) + alpha * dt / dx^2 * (T(n, i+l) - 2*T(n, i) + T(n, i-l));
     end
 end
-plot(x, T);
-xlabel('Position');
-ylabel('Temperature');
-title('Temperature distribution in counter flow heat conduction');
+% Plor results
+[X, T] = meshgrid(x, t);
+figure;
+surf(X, T, transpose(T));
+xlabel('Distance (m)');
+ylabel('Time (s)');
+zlabel('Temperature Distribition in Counterflow Heat Exchanger');
